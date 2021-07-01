@@ -10,9 +10,10 @@ https://docs.djangoproject.com/en/3.2/howto/deployment/asgi/
 import os
 
 from django.core.asgi import get_asgi_application
-from channels import asgi
+import channels
+
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings')
 
 application = get_asgi_application()
-channel_layer = asgi.get_channel_layer()
+channel_layer = channels.DEFAULT_CHANNEL_LAYER
