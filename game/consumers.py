@@ -1,12 +1,19 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
 import json
 from . import hangedman
-
+from random import randint
 
 class GameConsumer(AsyncWebsocketConsumer):
     games = {}
+    
+    def __getUsername(self):
+        username = self.scope['user'].username
+        if username == "":
+            username = "Guest " +  str(self.scope['session'].session_key)[0:5]
+        return username
 
     async def connect(self):
+        # print(str(self.scope['session'].session_key))
         # Obtener el room_name a partir de la url
         self.room_name = self.scope['url_route']['kwargs']['room_name']
 
@@ -24,15 +31,13 @@ class GameConsumer(AsyncWebsocketConsumer):
             game = hangedman.HangedMan()
             self.games[self.room_group_name] = game
 
-        # TODO: Quirar print
-        print(self.games)
-
         await self.accept()
 
     async def disconnect(self, code):
         game = self.games[self.room_group_name]
+        username = self.__getUsername()
         game.removeUsername(
-            self.scope['user'].username
+            username
         )
         await self.channel_layer.group_send(
                 self.room_group_name,
@@ -40,8 +45,8 @@ class GameConsumer(AsyncWebsocketConsumer):
                     'type': 'send_message',
                     'state': "disconnect",
                     'message': {
-                        'username': self.scope['user'].username,
-                        'cUser': game.currentUser()
+                        'username': username,
+                        'cUser': username
                     }
                 }
             )
@@ -59,7 +64,7 @@ class GameConsumer(AsyncWebsocketConsumer):
         inpt = message.pop('input', None)
         cword = None
         guessResult = None
-        username = self.scope['user'].username
+        username = self.__getUsername()
         # Uso del Modelo
         game = self.games[self.room_group_name]
         if event == "start":
@@ -106,7 +111,7 @@ class GameConsumer(AsyncWebsocketConsumer):
                 message = {
                     'username': username,
                 }
-        print(game.usernames())
+        # print(game.usernames())
         await self.channel_layer.group_send(
                 self.room_group_name,
                 {

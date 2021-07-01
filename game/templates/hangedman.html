@@ -20,12 +20,16 @@
   </head>
 
   <body>
-    <div class="title">HangMan</div>
+    <div class="title">
+      <a style="text-decoration:none; border:0;" href="{% url 'index' %}">HangMan</a>
+    </div>
 
-    <div class="currentword" id="word"></div>
+    <div style="height:30vh;">
+      <div class="currentword" id="word"></div>
+    </div>
 
     <div class="flexrow maincontainer">
-      <div class="flexcol leftcolumn" style="flex-basis: 40%">
+      <div class="flexcol leftcolumn" style="flex-basis: 30%">
         <div class="flexcol" style="flex-basis: 40%">
           <div class="flexrow center-text" id="info">
             <div class="maincontainer maintext" >Turn:</div>
@@ -60,7 +64,7 @@
 
       <div
         class="flexcol rightcolumn mainbox2 mainbox"
-        style="flex-basis: 60%"
+        style="flex-basis: 70%"
       >
           <div class="show" id="actions">          
           </div>
@@ -138,7 +142,7 @@
         };
 
         const gameSocket = new WebSocket(
-            'wss://' +
+            'ws://' +
             window.location.host +
             '/ws/game/' +
             roomName +
@@ -170,6 +174,8 @@
                     //document.querySelector('#gameState').textContent = "Palabra adivinada!";
                     document.querySelector('#word').textContent = "🎊" + message.cword + "🎉";
                     document.querySelector('#currentTurn').textContent = message.cUser;
+                    //document.querySelector('#actions').insertAdjacentElement('beforeend', document.createElement('br'));
+                    //document.querySelector('#actions').insertAdjacentText('beforeend', message.username + " has won! 🎉");
                     break;
                 case "unsolved":
                     message = data.message;
@@ -185,6 +191,7 @@
                     //document.querySelector('#actions').textContent += message.username + " guesses: " + message.input + ".";
                     document.querySelector('#actions').insertAdjacentElement('beforeend', document.createElement('br'));
                     document.querySelector('#actions').insertAdjacentText('beforeend', message.username + " guesses: " + message.input + ".");
+                   
                     break;
                 case "invalidTurn":
                     message = data.message;
@@ -205,7 +212,8 @@
                     break;
                 default:
                     break;
-            }         
+            }
+            document.querySelector('#actions').scrollTop = document.querySelector('#actions').scrollHeight;         
             
         };
 

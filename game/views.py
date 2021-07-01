@@ -10,8 +10,11 @@ def index(request):
         )
     return render(request, 'index.html', {})
 
-@login_required
+# @login_required
 def room(request, room_name):
+    if not request.user.is_authenticated:
+        #create anonymous user
+        request.session.save()
     return render(request, 'hangedman.html', {
         'room_name': room_name
     })

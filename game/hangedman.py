@@ -1,15 +1,27 @@
 from random import randint
+import requests
+
+
+
 
 class HangedMan():
     words = ['fiton', 'jackson','zurita','eeeee','one']
+    word_site = "https://www.mit.edu/~ecprice/wordlist.10000"
+
+
     
     def __init__(self):        
-        self.__setup()
         self.connectedUsernames = []   
+        response = requests.get(self.word_site)
+        self.WORDS = response.content.splitlines()
+        self.__setup()
             
     
     def __setup(self):
-        self.hiddenWord = self.words[randint(0,len(self.words)-1)]
+        # self.hiddenWord = str(self.WORDS[randint(0,len(self.WORDS)-1)])[1:]
+        self.hiddenWord = (self.WORDS[randint(0,len(self.WORDS)-1)]).decode('utf-8')
+        while len(self.hiddenWord) > 7:
+            self.hiddenWord = (self.WORDS[randint(0,len(self.WORDS)-1)]).decode('utf-8')
         self.currentWord = self.__get_format_hidden_word()
         self.currentUserIndex = 0
             
@@ -22,7 +34,7 @@ class HangedMan():
                 res += ' '
         return res
     
-    def addUsername(self, username):        
+    def addUsername(self, username):                    
         if username not in self.connectedUsernames:
             self.connectedUsernames.append(username)
         
