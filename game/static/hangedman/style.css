@@ -1,0 +1,348 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: #202831;
+  color: #ffffff;
+
+  font-family: "euro";
+  letter-spacing: 2.5px;
+  padding: 0 10vw 0 10vw;
+  line-height: 1.428;
+}
+
+@font-face {
+  font-family: "euro";
+  src: local("euro"), url("/static/hangedman/eurof55.ttf") format("truetype");
+}
+
+.title {
+  width: 100%;
+  position: relative;
+  text-align: center;
+  vertical-align: middle;
+  padding-top: 4vh;
+  font-size: 4vh;
+}
+
+.currentword {
+  width: 100%;
+  position: relative;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 15vh;
+  letter-spacing: 5vw;
+  padding: 4vh 0px 4vh 0px;
+}
+
+.maincontainer {
+  height: 40%;
+}
+
+.flexrow {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: inherit;
+  align-content: center;
+}
+
+.flexrow.left {
+  align-content: space-between;
+}
+
+.flexcol {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: inherit;
+  align-content: center;
+}
+
+.flex {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+}
+
+.flexexpand {
+  flex-grow: 1;
+}
+
+.rightcolumn {
+  margin-left: 5%;
+}
+
+.leftcolumn {
+  margin-right: 5%;
+}
+
+.mainbox {
+  border-color: #ffffff;
+  border-style: solid;
+  border-width: 0.4vh;
+  border-radius: 3vh;
+  background-color: none;
+  padding: 1.5vh;
+}
+
+.mainbox2 {
+  padding: 3vh;
+}
+
+.bigtext {
+  font-weight: 800;
+}
+
+.maintext {
+  font-size: 3.5vh;
+}
+
+.center-text {
+  text-align: center;
+}
+
+.horizontal-space {
+  width: 0.8vw;
+  height: 100%;
+}
+
+.vertical-space {
+  height: 100px;
+}
+
+.show {
+  color: #fff;
+  display: table-cell;
+  text-align: left;
+  vertical-align: middle;
+  overflow-y: scroll;
+}
+
+.show::-webkit-scrollbar {
+  display: none;
+}
+
+
+.bar {
+  background-color: #ffffff;
+  width: 0.4vh;
+  height: 100%;
+  border-radius: 3vh;
+}
+
+
+.flexinputrow {
+    display: flex;
+    flex-direction: row;
+    justify-content: left;
+    align-items: inherit;
+    align-content: center;
+}
+
+.inputarea{
+    width: 100%;
+    max-width: 100%;
+    background-color: transparent;
+    text-align: left;
+    vertical-align: middle;
+    overflow-y: scroll;
+    border-color: transparent;
+    color: #fff;
+    font-size: 2.5vh;
+    font-family: 'euro';
+    letter-spacing: 3px;
+    outline: none;
+}
+
+
+.inputarea::-webkit-scrollbar {
+    display: none;
+}
+
+::selection {
+    color: #202831;
+    background: #fff;
+  }
+
+/* Button */
+
+.mainbutton{
+    font-size: 3.5vh;
+    font-family: 'euro';
+    letter-spacing: 3px;
+    color: #fff;
+    cursor: pointer;
+    background-color: transparent;
+}
+
+.mainbutton:hover {
+    color: #202831;
+    background-color: #fff;
+    font-weight: 500;
+}
+
+
+ul {
+    display: inline-grid;
+    grid-auto-flow: row;
+    grid-gap: 24px;
+    justify-items: center;
+    margin: auto;
+  }
+  
+  @media (min-width: 500px) {
+    ul {
+      grid-auto-flow: column;
+    }
+  }
+  
+  a {
+    color: white;
+    text-decoration: none;
+    box-shadow: inset 0 -1px 0 hsla(0, 0%, 100%, 0.4);
+  }
+  
+  a:hover {
+    box-shadow: inset 0 -1.2em 0 hsla(0, 0%, 100%, 0.4);
+  }
+  
+  li:last-child {
+    grid-column: 1 / 2;
+    grid-row: 1 / 2;
+  }
+  
+  p:hover {
+    animation: wave-animation 0.6s infinite;
+  }
+  
+  /* below is just for demo styling */
+  /*
+
+display: flex;
+    background-color: #002a38;
+    line-height: 1.3;
+    font-family: Menlo, monospace;
+    position: absolute;
+    bottom: 0;
+    height: 2.5rem;  
+    text-align: center;
+    vertical-align: middle;
+  
+  */
+  .footer {
+    position: absolute;
+    bottom: 0;
+  }
+  
+  @keyframes wave-animation {
+    0%,
+    100% {
+      transform: rotate(0deg);
+    }
+    25% {
+      transform: rotate(6deg);
+    }
+    75% {
+      transform: rotate(-5deg);
+    }
+  }
+  
+
+  
+.glow-on-hover {
+    width: 220px;
+    height: 50px;
+    border: none;
+    outline: none;
+    color: #fff;
+    background-color: #202831;
+    border-color: #fff;
+    border-width: 0.25vh;
+    border-style: solid;
+    cursor: pointer;
+    position: relative;
+    z-index: 0;
+    border-radius: 10px;    
+    font-size: 2.5vh;
+    font-family: 'euro';
+    letter-spacing: 3px;
+}
+
+.glow-on-hover:before {
+    content: '';
+    background: linear-gradient(45deg, #ffffff, #d1d1d1, #afafaf, #7c7c7c, #c3c3c3, #bbbbbb, #dfdfdf, #eeeeee, #ffffff);
+    position: absolute;
+    top: -2px;
+    left:-2px;
+    background-size: 400%;
+    z-index: -1;
+    filter: blur(5px);
+    width: calc(100% + 4px);
+    height: calc(100% + 4px);
+    animation: glowing 20s linear infinite;
+    opacity: 0;
+    transition: opacity .3s ease-in-out;
+    border-radius: 10px;
+}
+
+.glow-on-hover:active{
+    color: #202831
+}
+
+.glow-on-hover:active:after{
+    background: transparent;
+}
+
+.glow-on-hover:hover:before {
+    opacity: 1;
+}
+
+.glow-on-hover:after {
+    z-index: -1;
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: #202831;
+    left: 0;
+    top: 0;
+    border-radius: 10px;
+}
+
+@keyframes glowing {
+    0% { background-position: 0 0; }
+    50% { background-position: 400% 0; }
+    100% { background-position: 0 0; }
+}
+
+.smallinput{
+    text-align: left;
+    vertical-align: middle;
+    overflow-y: scroll;
+    outline: none;
+    font-size: 20px;
+    font-family: 'euro';
+    letter-spacing: 3px;
+    color: #202831;
+    background-color: #fff;
+    border-radius: 5px;
+    border-color: transparent;
+    border: solid;
+    height: 32px;
+    padding: 0 5px 0 5px;
+}
+
+.smallinput:hover, .smallinput:focus{
+    background-color: #202831;
+    color: #fff;
+    border-color: #fff;
+}
+
+.puntito{
+    font-size: 29px;
+    font-weight: bold;
+    
+}

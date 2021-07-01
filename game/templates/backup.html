@@ -1,0 +1,164 @@
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+
+    <title>HangedMan</title>
+</head>
+
+<body>
+
+    <div style="width:100%; position:relative; text-align:center;">
+        <h1 style="margin:auto; vertical-align:middle;">Let's Play HangedMan</h1>
+    </div>
+    <div style="width:100%; position:absolute; text-align:center;">
+        <h2 id="word" style="margin:auto; vertical-align:middle;">Hidden Word Here</h2>
+    </div>
+
+    <br>
+    <div style="width:100%; position:absolute; text-align:center;">
+        <h2 id="gameState" style="margin:auto; vertical-align:middle;"></h2>
+    </div>
+    </br>
+
+    <br> </br>
+    <div class="container">
+        <div class="row d-flex justify-content-center">
+            <div class="col-6">
+                <form>
+                    <div class="form-group">
+                        <input class="form-control" id="input" type="text"></br>
+                    </div>
+                    <input class="btn btn-secondary btn-lg btn-block" id="submitLetter" type="button" value="Submit Letter">
+                    <input class="btn btn-secondary btn-lg btn-block" id="submitWord" type="button" value="Submit Word">
+                </form>
+                <label for="exampleFormControlTextarea1" class="h4 pt-5">Log</label>
+                <textarea class="form-control" id="actions" rows="10"></textarea><br>
+                <h3>Turno</h3>
+                <h3 id="currentTurn"></h3>
+            </div>
+        </div>
+    </div>
+
+   
+
+    
+    {{ room_name|json_script:"room_name" }}
+    {{ username|json_script:"username" }}
+
+    <script>
+        const userName = JSON.parse(document.getElementById('username').textContent); 
+        const roomName = JSON.parse(document.getElementById('room_name').textContent); 
+
+        document.querySelector('#submitLetter').onclick = function (e){
+            const inputDom = document.querySelector('#input');
+            const input = inputDom.value;
+            gameSocket.send(
+                JSON.stringify({
+                    'event': "letter",
+                    'message':{
+                        'input': input,
+                        'username' : userName,
+                    }
+                })
+            );
+            console.log("Letter");
+            inputDom.value = '';
+        };        
+
+        document.querySelector('#submitWord').onclick = function (e){
+            const inputDom = document.querySelector('#input');
+            const input = inputDom.value;
+            gameSocket.send(
+                JSON.stringify({
+                    'event': "word",
+                    'message':{
+                        'input': input,
+                        'username' : userName,
+                    }
+                })
+            );
+            console.log("Word");
+            inputDom.value = '';
+        };
+
+        const gameSocket = new WebSocket(
+            'ws://' +
+            window.location.host +
+            '/ws/game/' +
+            roomName +
+            '/'
+        );
+
+        gameSocket.onopen = function(e){
+            gameSocket.send(
+                JSON.stringify({
+                    'event': "start",
+                    'message':{
+                    }
+                })
+            );
+        }
+
+        gameSocket.onmessage = function (event){
+            const data = JSON.parse(event.data);
+            console.log(data);
+            
+            switch (data.state){
+                case "solved":
+                    message = data.message;
+                    document.querySelector('#gameState').textContent = "Palabra adivinada!";
+                    document.querySelector('#word').textContent = message.cword;
+                    document.querySelector('#currentTurn').textContent = message.cUser;
+                    break;
+                case "unsolved":
+                    message = data.message;
+                    //document.querySelector('#guessResult').textContent = message.guessResult ? 'Correcto' : 'Fallido';
+                    document.querySelector('#gameState').textContent = "";
+                    document.querySelector('#word').textContent = message.cword;
+                    document.querySelector('#currentTurn').textContent = message.cUser;
+                    document.querySelector('#actions').value += message.username + " guesses: " + message.input + "\n";
+                    break;
+                case "invalidTurn":
+                    message = data.message;
+                    alert("It's not your turn, " + message.username + "!");
+                    break;
+                case "init":
+                    message = data.message;
+                    document.querySelector('#word').textContent = message.cword;
+                    document.querySelector('#currentTurn').textContent = message.cUser;
+                    document.querySelector('#actions').value += message.username + " has joined the game. \n";
+                    break;
+                case "disconnect":
+                    message = data.message;
+                    document.querySelector('#actions').value += message.username + " has left the game. \n";
+                    document.querySelector('#currentTurn').textContent = message.cUser;
+                    break;
+                default:
+                    break;
+            }         
+            
+        };
+
+    </script>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+        integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+        integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous">
+    </script>
+</body>
+
+</html>

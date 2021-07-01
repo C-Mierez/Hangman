@@ -1,0 +1,226 @@
+{% load static %}
+
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{% static 'hangedman/style.css' %}"
+/>
+
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <!-- Test Font -->
+
+    <title>HangMan</title>
+  </head>
+
+  <body>
+    <div class="title">HangMan</div>
+
+    <div class="currentword" id="word"></div>
+
+    <div class="flexrow maincontainer">
+      <div class="flexcol leftcolumn" style="flex-basis: 40%">
+        <div class="flexcol" style="flex-basis: 40%">
+          <div class="flexrow center-text" id="info">
+            <div class="maincontainer maintext" >Turn:</div>
+            <div class="horizontal-space"></div> 
+            <div class="maincontainer maintext bigtext" id="currentTurn"></div>
+          </div>
+        </div>
+        <div class="flexinputrow mainbox maintext " style="flex-basis: 10%;">
+            <div class="bar">
+            </div>
+            <div class="horizontal-space"></div>
+            <input type='text' id="input" class="inputarea"></input>
+        </div>
+        <div class="flexcol maintext center-text" style="flex-basis: 40%">
+          Take a guess!
+        </div>
+        <div class="flexrow" style="flex-basis: 10%">
+          <div
+            class="flexcol leftcolumn"
+            style="flex-grow: 1"
+          >
+            <input class="mainbox maintext center-text mainbutton" type='button' value="Letter" id="submitLetter"></input>
+          </div>
+          <div
+            class="flexcol rightcolumn"
+            style="flex-grow: 1"
+          >
+            <input class="mainbox maintext center-text mainbutton" type='button' value="Word" id="submitWord"></input>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="flexcol rightcolumn mainbox2 mainbox"
+        style="flex-basis: 60%"
+      >
+          <div class="show" id="actions">          
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="position: absolute; bottom:0; padding: 10px 10px 10px 10px; left: 50%;">
+        <div class="flexcol" style="position: relative; left: -50%; text-align: center;  vertical-align: middle;">
+            
+            <div class="flex" style="text-align: center;  vertical-align: middle;  align-items: center;">
+                <div class="puntito">·</div>  
+                <a href="https://github.com/C-Mierez/Hangman" style="text-align: center; vertical-align:middle;">GitHub</a>
+                <div class="puntito">·</div>  
+            </div>
+            <div class="flex" style="text-align: center;  vertical-align: middle;  align-items: center;">
+                <p style="text-align: center; vertical-align:middle;">Mierez, Carlos</p>
+                <div class="horizontal-space"></div> 
+                <div class="horizontal-space"></div> 
+                <div class="horizontal-space"></div> 
+                <div class="puntito">·</div>  
+                <div class="horizontal-space"></div> 
+                <div class="horizontal-space"></div> 
+                <div class="horizontal-space"></div> 
+                <p style="text-align: center; vertical-align:middle;">Oyarzun, Matias</p>
+                <div class="horizontal-space"></div> 
+                <div class="horizontal-space"></div> 
+                <div class="horizontal-space"></div> 
+                <div class="puntito">·</div>  
+                <div class="horizontal-space"></div> 
+                <div class="horizontal-space"></div> 
+                <div class="horizontal-space"></div> 
+                <p style="text-align: center; vertical-align:middle;">Quiñonez, Tomás</p>
+            </div>
+            
+        </div>
+    </div>
+    {{ room_name|json_script:"room_name" }}
+    {{ username|json_script:"username" }}
+
+    <script>
+        const userName = JSON.parse(document.getElementById('username').textContent); 
+        const roomName = JSON.parse(document.getElementById('room_name').textContent); 
+
+        document.querySelector('#submitLetter').onclick = function (e){
+            const inputDom = document.querySelector('#input');
+            const input = inputDom.value;
+            gameSocket.send(
+                JSON.stringify({
+                    'event': "letter",
+                    'message':{
+                        'input': input,
+                        'username' : userName,
+                    }
+                })
+            );
+            console.log("Letter");
+            inputDom.value = '';
+        };        
+
+        document.querySelector('#submitWord').onclick = function (e){
+            const inputDom = document.querySelector('#input');
+            const input = inputDom.value;
+            gameSocket.send(
+                JSON.stringify({
+                    'event': "word",
+                    'message':{
+                        'input': input,
+                        'username' : userName,
+                    }
+                })
+            );
+            console.log("Word");
+            inputDom.value = '';
+        };
+
+        const gameSocket = new WebSocket(
+            'ws://' +
+            window.location.host +
+            '/ws/game/' +
+            roomName +
+            '/'
+        );
+
+        gameSocket.onopen = function(e){
+            gameSocket.send(
+                JSON.stringify({
+                    'event': "start",
+                    'message':{
+                    }
+                })
+            );
+        }
+
+        gameSocket.onmessage = function (event){
+            const data = JSON.parse(event.data);
+            console.log(data);
+            
+            switch (data.state){
+                case "solved":
+                    message = data.message;
+                    document.querySelector('#info').innerHTML = '';
+                    document.querySelector('#info').innerHTML =
+                        '<div class="maincontainer maintext" >Winner:</div>' + 
+                        '<div class="horizontal-space"></div>' + 
+                        '<div class="maincontainer maintext bigtext" id="currentTurn"></div>';
+                    //document.querySelector('#gameState').textContent = "Palabra adivinada!";
+                    document.querySelector('#word').textContent = "🎊" + message.cword + "🎉";
+                    document.querySelector('#currentTurn').textContent = message.cUser;
+                    break;
+                case "unsolved":
+                    message = data.message;
+                    document.querySelector('#info').innerHTML = '';
+                    document.querySelector('#info').innerHTML = 
+                        '<div class="maincontainer maintext" >Turn:</div>' + 
+                        '<div class="horizontal-space"></div>' + 
+                        '<div class="maincontainer maintext bigtext" id="currentTurn"></div>';
+                    //document.querySelector('#guessResult').textContent = message.guessResult ? 'Correcto' : 'Fallido';
+                    //document.querySelector('#gameState').textContent = "";
+                    document.querySelector('#word').textContent = message.cword;
+                    document.querySelector('#currentTurn').textContent = message.cUser;
+                    //document.querySelector('#actions').textContent += message.username + " guesses: " + message.input + ".";
+                    document.querySelector('#actions').insertAdjacentElement('beforeend', document.createElement('br'));
+                    document.querySelector('#actions').insertAdjacentText('beforeend', message.username + " guesses: " + message.input + ".");
+                    break;
+                case "invalidTurn":
+                    message = data.message;
+                    alert("It's not your turn, " + message.username + "!");
+                    break;
+                case "init":
+                    message = data.message;
+                    document.querySelector('#word').textContent = message.cword;
+                    document.querySelector('#currentTurn').textContent = message.cUser;
+                    document.querySelector('#actions').insertAdjacentElement('beforeend', document.createElement('br'));
+                    document.querySelector('#actions').insertAdjacentText('beforeend', message.username + " has joined the game. 😎");
+                    break;
+                case "disconnect":
+                    message = data.message;
+                    document.querySelector('#actions').insertAdjacentElement('beforeend', document.createElement('br'));
+                    document.querySelector('#actions').insertAdjacentText('beforeend', message.username + " has left the game. 😔");
+                    document.querySelector('#currentTurn').textContent = message.cUser;
+                    break;
+                default:
+                    break;
+            }         
+            
+        };
+
+    </script>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+        integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+        integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous">
+    </script>
+  </body>
+</html>

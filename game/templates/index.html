@@ -1,0 +1,73 @@
+{% load static %}
+
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{% static 'hangedman/style.css' %}"
+/>
+
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <!-- Test Font -->
+
+    <title>HangMan</title>
+  </head>
+
+  <body>
+    <div>
+      <div class="flexcol" style="position: relative;  text-align: center;  vertical-align: middle;">
+        <div style="font-size:40px">Welcome to</div>
+        <div style="font-size:90px; letter-spacing:50px;">HangMan</div>
+        <div style="padding-top: 50px">
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-control">
+            <label for="room" class="maintext" style="font-size:22px">Enter Room ID:</label>
+            <input id="room" type="text" name="room_name" class="smallinput" required />
+            </div>
+            <div style="padding-top: 20px">
+            <button type="submit" class="glow-on-hover">Join Room</button>
+        </form>     
+    </div>   
+      </div>
+      
+      
+    </div>
+    <div style="position: absolute; bottom:0; padding: 10px 10px 10px 10px; left: 50%;">
+        <div class="flexcol" style="position: relative; left: -50%; text-align: center;  vertical-align: middle;">
+            
+            <div class="flex" style="text-align: center;  vertical-align: middle;  align-items: center;">
+                <div class="puntito">·</div>  
+                <a href="https://github.com/C-Mierez/Hangman" style="text-align: center; vertical-align:middle;">GitHub</a>
+                <div class="puntito">·</div>  
+            </div>
+            <div class="flex" style="text-align: center;  vertical-align: middle;  align-items: center;">
+                <p style="text-align: center; vertical-align:middle;">Mierez, Carlos</p>
+                <div class="horizontal-space"></div> 
+                <div class="horizontal-space"></div> 
+                <div class="horizontal-space"></div> 
+                <div class="puntito">·</div>  
+                <div class="horizontal-space"></div> 
+                <div class="horizontal-space"></div> 
+                <div class="horizontal-space"></div> 
+                <p style="text-align: center; vertical-align:middle;">Oyarzun, Matias</p>
+                <div class="horizontal-space"></div> 
+                <div class="horizontal-space"></div> 
+                <div class="horizontal-space"></div> 
+                <div class="puntito">·</div>  
+                <div class="horizontal-space"></div> 
+                <div class="horizontal-space"></div> 
+                <div class="horizontal-space"></div> 
+                <p style="text-align: center; vertical-align:middle;">Quiñonez, Tomás</p>
+            </div>
+            
+        </div>
+    
+  </body>
+</html>
