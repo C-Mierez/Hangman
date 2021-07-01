@@ -39,6 +39,8 @@ class GameConsumer(AsyncWebsocketConsumer):
         game.removeUsername(
             username
         )
+        if len(game.usernames()) != 0:
+            username = game.currentUser()
         await self.channel_layer.group_send(
                 self.room_group_name,
                 {
@@ -46,7 +48,7 @@ class GameConsumer(AsyncWebsocketConsumer):
                     'state': "disconnect",
                     'message': {
                         'username': username,
-                        'cUser': username
+                        'cUser': username,
                     }
                 }
             )
