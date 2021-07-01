@@ -121,6 +121,7 @@ body {
   text-align: left;
   vertical-align: middle;
   overflow-y: scroll;
+  font-size: 2.5vh;
 }
 
 .show::-webkit-scrollbar {
